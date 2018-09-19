@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+	<head>
+		<meta charset="utf-8">
+		<title>Tetris</title>
+		<link rel="stylesheet" type="text/css" href="style.css">
+	</head>
+	<body style="background-color:#a2e4ce">
+		<form action="main.html" method="get" id = "act">
+		    <label class="s-label">
+		    Введите имя: <br>
+			</label>
+		    <input type="text" placeholder="Имя пользователя"  id="username"><br>
+			<input type="button" class="button" value="Ввод" onchange=`changed()` id="butt">
+		</form>
+		<script type="text/javascript">
+			document.addEventListener("click", function(){
+			var user_n = document.getElementById('username').value;
+			console.log(user_n);
+
+			function changed(){
+				window.location("main.html");
+			}
+
+			/*
+			*/
+			});
+		</script>
+	</body>
+</html>

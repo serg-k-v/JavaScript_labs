@@ -1,0 +1,36 @@
+.button {
+    background-color: #62bdc3; /* Green */
+    border: none;
+    color: #153259;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+	border-radius:10px;
+    font-size: 20px;
+	margin-top: 2%;
+}
+
+input[type=text] {
+    border: 2px solid  #62bdc3;
+    border-radius: 2px;
+	padding: 15px 32px;
+	background-color: #e3eaee;
+	box-sizing: border-box;
+}
+
+.s-label{
+	font-size: 20px;
+	margin-top: 2%;
+	color: #153259;
+}
+
+#can {
+	width: 500px;
+	height: 800px;
+	border: 3px solid black;
+	margin: 20px;
+	background-color: #38703c;
+	/* background-image: url(backgr.png	); */
+
+}
