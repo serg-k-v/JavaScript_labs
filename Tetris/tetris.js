@@ -25,12 +25,12 @@ class Square {
 		this.y = y;
 	}
 
-	// rotate(center){
-	// 	// let tmp_y = this.y - center.y;
-    //     // let tmp_x = this.x - center.x;
-    //     // this.x = center.x + tmp_y;
-    //     // this.y = center.y + tmp_x;
-	// }
+	rotate(center){
+        let tmp_x = this.x + sizeSide/2 - center.x;
+		let tmp_y = this.y + sizeSide/2 - center.y;
+        this.x = center.x - sizeSide/2 - tmp_y;
+        this.y = center.y - sizeSide/2 + tmp_x;
+	}
 
 }
 
@@ -40,25 +40,31 @@ class Figure {
 		switch (figure) {
 			case "Figure_I":
 				this.figure = [ new Square(x,y), new Square(x+sizeSide,y), new Square(x+2*sizeSide,y), new Square(x+3*sizeSide,y)];
-				// this.center = {x: sizeSide*5, y: sizeSide}
+				this.center = {x: sizeSide*5, y: sizeSide};
 				break; //turquoise
 			case "Figure_J":
 				this.figure = [ new Square(x,y), new Square(x,y+sizeSide), new Square(x+sizeSide, y+sizeSide), new Square(x+2*sizeSide,y+sizeSide)]; //blue
+				this.center = {x: sizeSide*5.5, y: sizeSide*0.5};;
 				break;
 			case "Figure_L":
 				this.figure = [ new Square(x+2*sizeSide,y), new Square(x,y+sizeSide), new Square(x+sizeSide, y+sizeSide), new Square(x+2*sizeSide,y+sizeSide)]; //orange
+				this.center = {x: sizeSide*5.5, y: sizeSide*0.5};
 				break;
 			case "Figure_O":
 				this.figure = [ new Square(x,y), new Square(x+sizeSide,y), new Square(x,y+sizeSide), new Square(x+sizeSide,y+sizeSide)]; //yelow
+				this.center = {x: sizeSide*5, y: sizeSide};
 				break;
 			case "Figure_S":
 				this.figure = [ new Square(x+sizeSide, y), new Square(x+2*sizeSide, y), new Square(x,y+sizeSide), new Square(x+sizeSide, y+sizeSide)]; //green
+				this.center = {x: sizeSide*5.5, y: sizeSide*1.5};
 				break;
 			case "Figure_T":
 				this.figure = [ new Square(x+sizeSide,y), new Square(x,y+sizeSide), new Square(x+sizeSide, y+sizeSide), new Square(x+2*sizeSide,y+sizeSide)]; //purpure
+				this.center = {x: sizeSide*5.5, y: sizeSide*1.5};
 				break;
 			case "Figure_Z":
 				this.figure = [ new Square(x,y), new Square(x+sizeSide,y), new Square(x+sizeSide,y+sizeSide), new Square(x+2*sizeSide,y+sizeSide)]; //red
+				this.center = {x: sizeSide*5.5, y: sizeSide*1.5};
 				break;
 			default:
 				console.log("Figure isn't exist!\n");
@@ -67,6 +73,11 @@ class Figure {
 
 	rotate(){
 		this.clear();
+			for (let sq of this.figure) {
+				// console.log("x = ", sq.x, "y = ", sq.y);
+				console.log("center x = ", this.center.x, "center y = ", this.center.y);
+				sq.rotate(this.center);
+			}
         this.draw();
 	}
 
@@ -87,12 +98,14 @@ class Figure {
 		if(this.canMoveDown()){  /*y_max < yRange - sizeSide ||*/
 			for(let i of this.figure)
 				i.y = i.y + sizeSide;
-			console.log("KEEEEK");
+
+			this.center.y += sizeSide;
 		}else {
 			for(let i of this.figure){
 				matrixFigure[i.y/50][i.x/50] = true;
+				this.flag_move = false;
 			}
-			this.flag_move = false;
+
 		}
 		this.draw();
 	}
@@ -100,11 +113,12 @@ class Figure {
 	left(){
 		this.clear();
 		let x_min = Math.min.apply(null, this.figure.map(item => item.x));
-		if(this.flag_move && this.canMoveLeft()){
-			for(let i of this.figure){
-				if( x_min > 0 ){
+		if(this.flag_move){
+			if( x_min > 0 && this.canMoveLeft()){
+				for(let i of this.figure){
 					i.x = i.x - sizeSide;
 				}
+				this.center.x -= sizeSide;
 			}
 		}
 		this.draw();
@@ -114,10 +128,11 @@ class Figure {
 		this.clear();
 		let x_max = Math.max.apply(null, this.figure.map(item => item.x));
 		if(this.flag_move){
-			for(let i of this.figure){
-				if( x_max < xRange - sizeSide ){
+			if( x_max < xRange - sizeSide && this.canMoveRight() ){
+				for(let i of this.figure){
 					i.x = i.x + sizeSide;
 				}
+				this.center.x += sizeSide;
 			}
 		}
 		this.draw();
@@ -126,7 +141,7 @@ class Figure {
 	canMoveDown(){
 		let cnt = 0;
 		for(let i of this.figure){
-			if( !matrixFigure[i.y/sizeSide+1][i.x/sizeSide]){
+			if( !matrixFigure[i.y/sizeSide+1][i.x/sizeSide] ){
 				cnt++;
 			}
 		}
@@ -140,7 +155,7 @@ class Figure {
 	canMoveLeft(){
 		let cnt = 0; //let x_min = Math.min.apply(null, this.figure.map(item => item.x));
 		for(let i of this.figure){
-			if( !matrixFigure[i.y/sizeSide][i.x/sizeSide+1]){
+			if( !matrixFigure[i.y/sizeSide][i.x/sizeSide-1] ){
 				cnt++;
 			}
 		}
@@ -152,6 +167,20 @@ class Figure {
 	}
 
 	canMoveRight(){
+		let cnt = 0; //let x_min = Math.min.apply(null, this.figure.map(item => item.x));
+		for(let i of this.figure){
+			if( !matrixFigure[i.y/sizeSide][i.x/sizeSide+1] ){
+				cnt++;
+			}
+		}
+		if(cnt === this.figure.length){
+			return true;
+		}else {
+			return false;
+		}
+	}
+
+	canRotate(){
 
 	}
 
@@ -199,6 +228,8 @@ function matrixFill(rows,columns){
 
 matrixFigure = matrixFill(yRange/sizeSide-1,10); // 15 = yRange/sizeSide-1; 10 = xRange/sizeSide
 
+
+/****************************/
 function checkOnLose() {
 	return false;
 }
@@ -238,6 +269,7 @@ function recountMatrix() {
     }
 }
 
+/***************************/
 
 function startGame() {
 	console.log(matrixFigure);
@@ -254,14 +286,14 @@ function startGame() {
 		// 	endGame();
 		// }
 
-		f = /*new Figure(200, 0, figureArr[Math.floor(Math.random()*7)]); //*/new Figure(200, 0, "Figure_I");
+		f = new Figure(200, 0, "Figure_T"); //new Figure(200, 0, figureArr[Math.floor(Math.random()*7)]); // new Figure(200, 0, "Figure_O");// */new Figure(200, 0, "Figure_I");
 	}
 }
 
 function newGame() {
 	clearInterval(interval);
 	console.log("newGame");
-	f = new Figure(200, 0, "Figure_I"); // var f = new Figure(200, 0, figureArr[Math.floor(Math.random()*7)]);
+	f = new Figure(200, 0, "Figure_T"); //  new Figure(200, 0, figureArr[Math.floor(Math.random()*7)]); //	new Figure(200, 0, "Figure_O"); //new Figure(200, 0, figureArr[Math.floor(Math.random()*7)]);
 	score = 0;
 	interval = setInterval( startGame, 500 );
 
