@@ -8,10 +8,7 @@ var yRange = 800;
 var sizeSide = 50;
 
 let interval;
-var f;
-
-var matrixFigure;
-
+var matrixFigure
 var figureArr = ["Figure_I", "Figure_J", "Figure_L", "Figure_O", "Figure_S", "Figure_T","Figure_Z"];
 
 function draw(x, y){
@@ -28,12 +25,12 @@ class Square {
 		this.y = y;
 	}
 
-	rotate(center){
-		let tmp_y = this.y - center.y;
-        let tmp_x = this.x - center.x;
-        this.x = center.x + tmp_y;
-        this.y = center.y + tmp_x;
-	}
+	// rotate(center){
+	// 	// let tmp_y = this.y - center.y;
+    //     // let tmp_x = this.x - center.x;
+    //     // this.x = center.x + tmp_y;
+    //     // this.y = center.y + tmp_x;
+	// }
 
 }
 
@@ -43,7 +40,7 @@ class Figure {
 		switch (figure) {
 			case "Figure_I":
 				this.figure = [ new Square(x,y), new Square(x+sizeSide,y), new Square(x+2*sizeSide,y), new Square(x+3*sizeSide,y)];
-				this.center = {x: sizeSide*5, y: sizeSide}
+				// this.center = {x: sizeSide*5, y: sizeSide}
 				break; //turquoise
 			case "Figure_J":
 				this.figure = [ new Square(x,y), new Square(x,y+sizeSide), new Square(x+sizeSide, y+sizeSide), new Square(x+2*sizeSide,y+sizeSide)]; //blue
@@ -86,16 +83,16 @@ class Figure {
 	}
 
 	down(){
-		this.clear();
-		let y_max = Math.max.apply(null, this.figure.map(item => item.y));
-		for(let i of this.figure){
-			if( y_max < yRange - sizeSide /*checkNextMove()*/){  //???????
-				i.y = i.y+ sizeSide;
-			}else {
-				matrixFigure[i.x/50][i.y/50] = true;
-				// console.log("x = ", i.x/50, "y = ", i.y/50);
-				this.flag_move = false;
+		this.clear();// let y_max = Math.max.apply(null, this.figure.map(item => item.y));
+		if(this.canMoveDown()){  /*y_max < yRange - sizeSide ||*/
+			for(let i of this.figure)
+				i.y = i.y + sizeSide;
+			console.log("KEEEEK");
+		}else {
+			for(let i of this.figure){
+				matrixFigure[i.y/50][i.x/50] = true;
 			}
+			this.flag_move = false;
 		}
 		this.draw();
 	}
@@ -103,7 +100,7 @@ class Figure {
 	left(){
 		this.clear();
 		let x_min = Math.min.apply(null, this.figure.map(item => item.x));
-		if(this.flag_move){
+		if(this.flag_move && this.canMoveLeft()){
 			for(let i of this.figure){
 				if( x_min > 0 ){
 					i.x = i.x - sizeSide;
@@ -124,6 +121,38 @@ class Figure {
 			}
 		}
 		this.draw();
+	}
+
+	canMoveDown(){
+		let cnt = 0;
+		for(let i of this.figure){
+			if( !matrixFigure[i.y/sizeSide+1][i.x/sizeSide]){
+				cnt++;
+			}
+		}
+		if(cnt === this.figure.length){
+			return true;
+		}else {
+			return false;
+		}
+	}
+
+	canMoveLeft(){
+		let cnt = 0; //let x_min = Math.min.apply(null, this.figure.map(item => item.x));
+		for(let i of this.figure){
+			if( !matrixFigure[i.y/sizeSide][i.x/sizeSide+1]){
+				cnt++;
+			}
+		}
+		if(cnt === this.figure.length){
+			return true;
+		}else {
+			return false;
+		}
+	}
+
+	canMoveRight(){
+
 	}
 
 }
@@ -153,55 +182,91 @@ document.addEventListener('keydown', (event) => {
 
 });
 
-function matrixArray(rows,columns){
+function matrixFill(rows,columns){
  	var arr = new Array();
- 	for(var i=0; i<rows; i++){
+ 	for(var i=0; i<rows+2; i++){
 		arr[i] = new Array();
 		for(var j=0; j<columns; j++){
-			arr[i][j] = false;//вместо i+j+1 пишем любой наполнитель. В простейшем случае - null
+			if(i===rows+1 || i===0){
+				arr[i][j] = true;
+			}else {
+				arr[i][j] = false;
+			}
 		}
  	}
  	return arr;
 }
 
-function arrayColumn(arr, n) {
-  return arr.map(y => y[n]);
+matrixFigure = matrixFill(yRange/sizeSide-1,10); // 15 = yRange/sizeSide-1; 10 = xRange/sizeSide
+
+function checkOnLose() {
+	return false;
 }
 
-matrixFigure = matrixArray(10,16);  //FIX_IT
-
-function checkMatrix() {
-	let arr = arrayColumn(matrixFigure, 15);
-	console.log(arr);
-	for (let i of arr) {
-		console.log(i);
-		// console.log("pam pam", i);
-		if(i)
+function checkFullLine() {
+	var clearing_line_is;
+	var count = 0;
+	for (var i = 1; i < 17; i++) {
+		count = 0;
+		for (var j = 0; j < 10; j++) {
+			if(matrixFigure[i][j] && i != 0){
+				count++;
+			}
+			console.log("count=", count);
+		}
+		if(count === j){
+			console.log(count, "==", j);
+			clearing_line_is = i;
 			return true;
+		}
 	}
 	return false;
 }
 
+function clearLine() {
+	console.log("clearing_line_is", clearing_line_is);
+    var image = ctx.getImageData(0, 0, canvas.width, (clearing_line_is-1)*sizeSide);
+    ctx.clearRect(0, 0, canvas.width, clearing_line_is*sizeSide);
+    ctx.putImageData(image, 0, sizeSide);
+	score++;
+	recountMatrix();
+}
+
+function recountMatrix() {
+	for (let i = clearing_line_is; i > 1; i--){
+        matrix[i] = matrix[i-1];
+    }
+}
+
+
 function startGame() {
-	if(f.flag_move){
+	console.log(matrixFigure);
+
+	if(f.flag_move){ //f.canMoveDown
 		f.draw();
 		f.down();
 	}else {
-		checkFullLine();
-		if(checkOnLose()){
-			endGame();
-		}
+		// console.log(matrixFigure);
+
+		// if(checkFullLine())
+		// 	clearLine();
+		// if(checkOnLose()){
+		// 	endGame();
+		// }
+
+		f = /*new Figure(200, 0, figureArr[Math.floor(Math.random()*7)]); //*/new Figure(200, 0, "Figure_I");
 	}
-	f = new Figure(200, 0, "Figure_I");
 }
 
 function newGame() {
 	clearInterval(interval);
 	console.log("newGame");
 	f = new Figure(200, 0, "Figure_I"); // var f = new Figure(200, 0, figureArr[Math.floor(Math.random()*7)]);
-	interval = setInterval( startGame, 1000 );
+	score = 0;
+	interval = setInterval( startGame, 500 );
 
 }
+
 function endGame() {
 	flag_move = false;
     clearInterval (interval);
