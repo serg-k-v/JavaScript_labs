@@ -32,6 +32,15 @@ class Square {
         this.y = center.y - sizeSide/2 + tmp_x;
 	}
 
+	possibleRotate(){
+		let tmp_x = this.x + sizeSide/2 - center.x;
+		let tmp_y = this.y + sizeSide/2 - center.y;
+        let new_x = center.x - sizeSide/2 - tmp_y;
+        let new_y = center.y - sizeSide/2 + tmp_x;
+
+		return {x: new_x, y: new_y};
+	}
+
 }
 
 class Figure {
@@ -73,11 +82,15 @@ class Figure {
 
 	rotate(){
 		this.clear();
-			for (let sq of this.figure) {
-				// console.log("x = ", sq.x, "y = ", sq.y);
-				console.log("center x = ", this.center.x, "center y = ", this.center.y);
-				sq.rotate(this.center);
+		if(this.flag_move){
+			if(this.canRotate()){
+				for (let sq of this.figure) {
+					// console.log("x = ", sq.x, "y = ", sq.y);
+					console.log("center x = ", this.center.x, "center y = ", this.center.y);
+					sq.rotate(this.center);
+				}
 			}
+		}
         this.draw();
 	}
 
@@ -181,7 +194,17 @@ class Figure {
 	}
 
 	canRotate(){
-
+		let cnt = 0; //let x_min = Math.min.apply(null, this.figure.map(item => item.x));
+		for(let i of this.figure){
+			if( !matrixFigure[i.y/sizeSide][i.x/sizeSide+1] ){
+				cnt++;
+			}
+		}
+		if(cnt === this.figure.length){
+			return true;
+		}else {
+			return false;
+		}
 	}
 
 }
@@ -286,14 +309,14 @@ function startGame() {
 		// 	endGame();
 		// }
 
-		f = new Figure(200, 0, "Figure_T"); //new Figure(200, 0, figureArr[Math.floor(Math.random()*7)]); // new Figure(200, 0, "Figure_O");// */new Figure(200, 0, "Figure_I");
+		f = new Figure(200, 0, figureArr[Math.floor(Math.random()*7)]); // new Figure(200, 0, "Figure_O");// */new Figure(200, 0, "Figure_I");
 	}
 }
 
 function newGame() {
 	clearInterval(interval);
 	console.log("newGame");
-	f = new Figure(200, 0, "Figure_T"); //  new Figure(200, 0, figureArr[Math.floor(Math.random()*7)]); //	new Figure(200, 0, "Figure_O"); //new Figure(200, 0, figureArr[Math.floor(Math.random()*7)]);
+	f = new Figure(200, 0, figureArr[Math.floor(Math.random()*7)]); //	new Figure(200, 0, "Figure_O"); //new Figure(200, 0, figureArr[Math.floor(Math.random()*7)]);
 	score = 0;
 	interval = setInterval( startGame, 500 );
 
