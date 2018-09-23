@@ -17,7 +17,7 @@ function draw(x, y){
 	ctx.lineWidth = 2; // width of stroke
 	ctx.fillRect(x+2, y+2, sizeSide-2, sizeSide-2);
 	ctx.strokeStyle = blackRect;
-	ctx.strokeRect(x+2, y+2, sizeSide-2, sizeSide-2);
+	ctx.strokeRect(x+2, y+2, sizeSide-4, sizeSide-4);
 }
 
 class Square {
@@ -32,7 +32,6 @@ class Square {
         this.x = center.x - sizeSide/2 - tmp_y;
         this.y = center.y - sizeSide/2 + tmp_x;
 	}
-
 	possibleRotate(center){
 		let tmp_x = this.x + sizeSide/2 - center.x;
 		let tmp_y = this.y + sizeSide/2 - center.y;
@@ -82,7 +81,6 @@ class Figure {
 	}
 
 	rotate(){
-
 		if(this.flag_move){
 			if(this.canRotate()){
 				this.clear();
@@ -109,19 +107,19 @@ class Figure {
 			if( matrixFigure[new_coords.new_y/sizeSide][new_coords.new_x/sizeSide] != undefined && !matrixFigure[new_coords.new_y/sizeSide][new_coords.new_x/sizeSide] /*&& new_coords.new_y < yRange - sizeSide */){
 				cnt++;
 			}
-			console.log("new coordinates x = ", new_coords.new_x, "y = ", new_coords.new_y);
-			console.log("x = ", i.x, "y = ", i.y);
-			console.log(matrixFigure[new_coords.new_y/sizeSide][new_coords.new_x/sizeSide]);
+			// console.log("new coordinates x = ", new_coords.new_x, "y = ", new_coords.new_y);
+			// console.log("x = ", i.x, "y = ", i.y);
+			// console.log(matrixFigure[new_coords.new_y/sizeSide][new_coords.new_x/sizeSide]);
 		}
 
 		if(y_max > yRange){
-			console.log("RANNGEE");
+			// console.log("RANNGEE");
 			return false;
 		}
 
 		if(cnt === this.figure.length){
-			console.log("TRUEEEEEEEEE");
-			console.log(matrixFigure);
+			// console.log("TRUEEEEEEEEE");
+			// console.log(matrixFigure);
 
 			return true;
 		}else {
@@ -131,7 +129,7 @@ class Figure {
 
 	clear(){
 		for (let i of this.figure) {
-			ctx.clearRect(i.x, i.y, sizeSide+1, sizeSide+1);
+			ctx.clearRect(i.x, i.y, sizeSide, sizeSide);
 		}
 	}
 	draw() {
@@ -186,7 +184,7 @@ class Figure {
 	canMoveDown(){
 		let cnt = 0;
 		for(let i of this.figure){
-			if( !matrixFigure[i.y/sizeSide+1][i.x/sizeSide] ){
+			if( !matrixFigure[i.y/sizeSide+1][i.x/sizeSide] && i.y/sizeSide+1 != 0 && i.y/sizeSide+1 != 0){
 				cnt++;
 			}
 		}
@@ -271,18 +269,22 @@ matrixFigure = matrixFill(yRange/sizeSide-1,10); // 15 = yRange/sizeSide-1; 10 =
 function checkOnLose() {
 	return false;
 }
+/***************************/
+
 
 function checkFullLine() {
-	for (var i = yRange/sizeSide; i < 1; i++) {
+	console.log("I'M HERE!!");
+	for (var i = yRange/sizeSide-1; i > 1; i--) {
 		 let count = 0;
 		for (var j = 0; j < xRange/sizeSide; j++) {
 			if(matrixFigure[i][j]){
 				count++;
+				console.log("IT'S True");
 			}
 			console.log("count=", count);
 		}
-		if(count === j){
-			console.log(count, "==", j);
+		if(count === xRange/sizeSide){
+			console.log(count, "==", 10);
 			clearing_line_is = i;
 			return true;
 		}
@@ -292,7 +294,7 @@ function checkFullLine() {
 
 function clearLine() {
 	console.log("clearing_line_is", clearing_line_is);
-    var image = ctx.getImageData(0, 0, canvas.width, (clearing_line_is-1)*sizeSide);
+    var image = ctx.getImageData(0, 0, canvas.width, (clearing_line_is)*sizeSide);
     ctx.clearRect(0, 0, canvas.width, clearing_line_is*sizeSide);
     ctx.putImageData(image, 0, sizeSide);
 	score++;
@@ -304,8 +306,6 @@ function recountMatrix() {
         matrixFigure[i] = matrixFigure[i-1];
     }
 }
-
-/***************************/
 
 function startGame() {
 	console.log(matrixFigure);
@@ -323,16 +323,16 @@ function startGame() {
 		// 	endGame();
 		// }
 
-		// f = new Figure(200, 0, figureArr[Math.floor(Math.random()*7)]); // new Figure(200, 0, "Figure_O");// */new f
-		f = new Figure(200, 0, "Figure_I");
+		f = new Figure(200, 0, figureArr[Math.floor(Math.random()*7)]); // new Figure(200, 0, "Figure_O");// */new f
+		// f = new Figure(200, 0, "Figure_I");
 	}
 }
 
 function newGame() {
 	clearInterval(interval);
 	console.log("newGame");
-	// f = new Figure(200, 0, figureArr[Math.floor(Math.random()*7)]);
-	f = new Figure(200, 0, "Figure_I");
+	f = new Figure(200, 0, figureArr[Math.floor(Math.random()*7)]);
+	// f = new Figure(200, 0, "Figure_I");
 	score = 0;
 	interval = setInterval( startGame, 500 );
 
