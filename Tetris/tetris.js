@@ -1,4 +1,4 @@
-var canvas = document.getElementById('can');
+var canvas = document.getElementById('canvas1');
 var ctx = canvas.getContext('2d');
 
 var lightGrFill = "#92c8ad";
@@ -184,10 +184,13 @@ class Figure {
 	canMoveDown(){
 		let cnt = 0;
 		for(let i of this.figure){
-			if( !matrixFigure[i.y/sizeSide+1][i.x/sizeSide] && i.y/sizeSide+1 != 0 && i.y/sizeSide+1 != 0){
+			if( !matrixFigure[i.y/sizeSide+1][i.x/sizeSide]){
 				cnt++;
 			}
+			// if(i.y/sizeSide+1 != 0 && i.y/sizeSide+1 != 0)
 		}
+
+
 		if(cnt === this.figure.length){
 			return true;
 		}else {

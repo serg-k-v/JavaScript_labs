@@ -7,11 +7,14 @@
 	</head>
 	<body style="background-color:#a2e4ce">
 		<form action="main.html" method="get" id = "act">
-		    <label class="s-label">
-		    Введите имя: <br>
-			</label>
-		    <input type="text" placeholder="Имя пользователя"  id="username"><br>
-			<input type="button" class="button" value="Ввод" onchange=`changed()` id="butt">
+			<div class="block1">
+				<label class="s-label_search">
+					<h1>Введите имя:</h1>
+				</label>
+
+			    <input type="text" placeholder="Имя пользователя"  id="username"><br>
+				<input type="button" class="button" value="Ввод" onchange=`changed()` id="butt">
+			</div>
 		</form>
 		<script type="text/javascript">
 			document.addEventListener("click", function(){
