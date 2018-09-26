@@ -204,10 +204,7 @@ class Figure {
 			if( !matrixFigure[i.y/sizeSide+1][i.x/sizeSide]){
 				cnt++;
 			}
-			// if(i.y/sizeSide+1 != 0 && i.y/sizeSide+1 != 0)
 		}
-
-
 		if(cnt === this.figure.length){
 			return true;
 		}else {
@@ -284,16 +281,14 @@ function matrixFill(rows,columns){
 
 matrixFigure = matrixFill(yRange/sizeSide-1,10); // 15 = yRange/sizeSide-1; 10 = xRange/sizeSide
 
-
-/****************************/
 function checkOnLose() {
-	return false;
+	for(let sq of f_next.figure)
+        if (matrixFigure[sq.y/sizeSide + 1][sq.x/sizeSide+1])
+            return false;
+    return true;
 }
-/***************************/
-
 
 function checkFullLine() {
-	console.log(matrixFigure);
 	lienes_for_delete = [];
 	for (var i = yRange/sizeSide-1; i > 1; i--) {
 		 let count = 0;
@@ -304,7 +299,6 @@ function checkFullLine() {
 		}
 		if(count === xRange/sizeSide){
 			lienes_for_delete.push(i);
-			console.log("WTF");
 		}
 	}
 
@@ -329,24 +323,21 @@ function recountMatrix(line) {
 	for (let i = line; i > 1; i--){
 		matrixFigure[i] = matrixFigure[i-1];
 	}
-
 }
 
 function startGame() {
-	// console.log(matrixFigure);
 
-	if(f_curent.flag_move){ //f.canMoveDown
+	if(f_curent.flag_move){
 		f_curent.draw();
 		f_curent.down();
 
 	}else {
-		// console.log("FLAG MOVE IS FALSE");
 		if(checkFullLine()){
 			clearLine();
 		}
-		// if(checkOnLose()){
-		// 	endGame();
-		// }
+		if(!checkOnLose()){
+			endGame();
+		}
 
 		f_curent = f_next;
 		f_next.clearNext();
@@ -368,8 +359,15 @@ function newGame() {
 }
 
 function endGame() {
-	flag_move = false;
-    clearInterval (interval);
-    alert('GAME OVER !');
+	console.log("AAAAAAAAAAAAAAAAAAAAA");
+	clearInterval (interval);
+	ctx.clearRect(0,0, mainField.width, mainField.height);
+	ctx2.clearRect(0,0, nextFigureField.width, nextFigureField.height);
+	let img = new Image();
+	var url = "/home/akuma/Desktop/JavaScript_labs/Tetris/gameOver.png";
+	img.onload = function() {
+		ctx.drawImage(img, 50, 200);
+	}
+	img.src = url;
 
 }
