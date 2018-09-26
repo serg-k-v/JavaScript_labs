@@ -7,6 +7,7 @@
 	</head>
 	<body style="background-color:#a2e4ce">
 		<form action="main.html" method="get" id = "act">
+
 			<div class="block1">
 				<label class="s-label_search">
 					<h1>Введите имя:</h1>
@@ -15,19 +16,27 @@
 			    <input type="text" placeholder="Имя пользователя"  id="username"><br>
 				<input type="button" class="button" value="Ввод" onchange=`changed()` id="butt">
 			</div>
+
 		</form>
-		<script type="text/javascript">
-			document.addEventListener("click", function(){
-			var user_n = document.getElementById('username').value;
-			console.log(user_n);
 
-			function changed(){
-				window.location("main.html");
-			}
-
-			/*
-			*/
-			});
-		</script>
 	</body>
 </html>
+
+<script type="text/javascript">
+
+	var user_n = document.getElementById('username');
+	if(localStorage['current_user']){
+		source.value = localStorage['current_user'];
+	}
+
+	function saveRedirect() {
+		localStorage['current_user'] = document.getElementById("username").value;
+		localStorage['current_user'] = 0;
+		window.location = 'main.html';
+
+	}
+
+	function read() {
+		source.value = localStorage[Math.floor(localStorage.length)/2];
+	}
+</script>

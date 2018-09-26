@@ -2,7 +2,7 @@
 <html lang="en" dir="ltr">
 	<head>
 		<meta charset="utf-8">
-		<title></title>
+		<title>Tetris</title>
 		<link rel="stylesheet" type="text/css" href="style.css">
 		<link href="bootstrap.css" rel="stylesheet">
 		<script type="text/javascript" src="tetris.js"></script>
@@ -21,6 +21,14 @@
 							<canvas id="nextFigureField" width="200", height="200"></canvas>
 						</div>
 					</div>
+					<div class="row" >
+						<div class="col-xs-12" style="margin-left: 3%;">
+							<span class="score">
+								<p><ins>Score</ins></p>
+							</span>
+							<canvas id="fieldScore" width="200", height="50"></canvas>
+						</div>
+					</div>
 				<div>
 			</div>
 		</div>
@@ -30,6 +38,8 @@
 			var ctx = canvas.getContext('2d');
 			var canvas2 = document.getElementById('nextFigureField');
 			var ctx2 = canvas2.getContext('2d');
+			var canvas3 = document.getElementById('fieldScore');
+			var ctxScore = canvas3.getContext('2d');
 			newGame();
 		</script>
 	</body>

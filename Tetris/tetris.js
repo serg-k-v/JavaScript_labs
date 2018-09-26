@@ -1,4 +1,4 @@
-var lightGrFill = "#92c8ad";
+var lightGrFill = "#7ed9c3";
 var blackRect = "#102d0e";
 var xRange = 500;
 var yRange = 800;
@@ -314,9 +314,21 @@ function clearLine() {
 	    var image = ctx.getImageData(0, 0, canvas.width, (line)*sizeSide);
 	    ctx.clearRect(0, 0, canvas.width, line*sizeSide);
 	    ctx.putImageData(image, 0, sizeSide);
-		score++;
 		recountMatrix(line);
+		recountScore()
 	}
+}
+
+function recountScore() {
+	score = Math.floor(score +1  + (score*2)/3);
+	ctxScore.clearRect(0, 0, sizeSide*4, sizeSide)
+	ctxScore.font = "40px Verdana"
+	var gradient=ctxScore.createLinearGradient(0,0, fieldScore.width,0);
+	gradient.addColorStop("0.4","magenta");
+	gradient.addColorStop("0.5","blue");
+	gradient.addColorStop("0.1","red");
+	ctxScore.fillStyle=gradient;
+	ctxScore.fillText(score, 10, 40);
 }
 
 function recountMatrix(line) {
@@ -359,7 +371,6 @@ function newGame() {
 }
 
 function endGame() {
-	console.log("AAAAAAAAAAAAAAAAAAAAA");
 	clearInterval (interval);
 	ctx.clearRect(0,0, mainField.width, mainField.height);
 	ctx2.clearRect(0,0, nextFigureField.width, nextFigureField.height);
