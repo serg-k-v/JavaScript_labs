@@ -4,23 +4,32 @@
 		<meta charset="utf-8">
 		<title></title>
 		<link rel="stylesheet" type="text/css" href="style.css">
+		<link href="bootstrap.css" rel="stylesheet">
+		<script type="text/javascript" src="tetris.js"></script>
 
 	</head>
 	<body style="background-image: url(backgrnd.jpg)">
 
-		<div class="block2">
-			<div class="block2">
-				<canvas id="canvas1" width="500", height="800"></canvas>
-				<script src="tetris.js"></script>
+		<div class="container">
+			<div class="row" style="margin-top: 2%" >
+				<div class="col-xs-12 col-md-6">
+					<canvas id="mainField" width="500", height="800"></canvas>
+				</div>
+				<div class="col-xs-12 col-md-6">
+					<div class="row">
+						<div class="col-xs-12">
+							<canvas id="nextFigureField" width="200", height="200"></canvas>
+						</div>
+					</div>
+				<div>
 			</div>
-			<div class="block3">
-				<canvas id="canvas2" width="200", height="200"></canvas>
-				<!-- <script src="tetris.js"></script> -->
-			</div>
-
 		</div>
 
 		<script>
+			var canvas = document.getElementById('mainField');
+			var ctx = canvas.getContext('2d');
+			var canvas2 = document.getElementById('nextFigureField');
+			var ctx2 = canvas2.getContext('2d');
 			newGame();
 		</script>
 	</body>

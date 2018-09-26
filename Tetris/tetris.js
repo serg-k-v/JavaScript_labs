@@ -1,15 +1,12 @@
-var canvas = document.getElementById('canvas1');
-var ctx = canvas.getContext('2d');
-
 var lightGrFill = "#92c8ad";
 var blackRect = "#102d0e";
 var xRange = 500;
 var yRange = 800;
 var sizeSide = 50;
-var clearing_line_is;
+var lienes_for_delete = [];
 
 let interval;
-var matrixFigure
+var matrixFigure;
 var figureArr = ["Figure_I", "Figure_J", "Figure_L", "Figure_O", "Figure_S", "Figure_T","Figure_Z"];
 
 function draw(x, y){
@@ -18,6 +15,14 @@ function draw(x, y){
 	ctx.fillRect(x+2, y+2, sizeSide-2, sizeSide-2);
 	ctx.strokeStyle = blackRect;
 	ctx.strokeRect(x+2, y+2, sizeSide-4, sizeSide-4);
+}
+
+function drawNext(x, y){
+	ctx2.fillStyle = lightGrFill;
+	ctx2.lineWidth = 2; // width of stroke
+	ctx2.fillRect(x+2, y+2, sizeSide-2, sizeSide-2);
+	ctx2.strokeStyle = blackRect;
+	ctx2.strokeRect(x+2, y+2, sizeSide-4, sizeSide-4);
 }
 
 class Square {
@@ -138,6 +143,18 @@ class Figure {
 		}
 	}
 
+	drawNext() {
+		for (let i of this.figure) {
+				drawNext(i.x-sizeSide*4, i.y+sizeSide);
+		}
+	}
+	clearNext(){
+		for (let i of this.figure) {
+			ctx2.clearRect(i.x-sizeSide*4, i.y+sizeSide, sizeSide, sizeSide);
+		}
+	}
+
+
 	down(){
 		this.clear();// let y_max = Math.max.apply(null, this.figure.map(item => item.y));
 		if(this.canMoveDown()){  /*y_max < yRange - sizeSide ||*/
@@ -229,20 +246,20 @@ document.addEventListener('keydown', (event) => {
 	const keyName = event.key;
 	switch (keyName) {
 		case 'ArrowDown':
-			f.down();
-			f.draw()
+			f_curent.down();
+			f_curent.draw()
 			break;
 		case "ArrowUp":
-			f.rotate();
-			f.draw();
+			f_curent.rotate();
+			f_curent.draw();
 			break;
 		case "ArrowLeft":
-			f.left();
-			f.draw();
+			f_curent.left();
+			f_curent.draw();
 			break;
 		case "ArrowRight":
-			f.right();
-			f.draw();
+			f_curent.right();
+			f_curent.draw();
 			break;
 		default:
 			console.log("Wrong key");
@@ -276,66 +293,75 @@ function checkOnLose() {
 
 
 function checkFullLine() {
-	console.log("I'M HERE!!");
+	console.log(matrixFigure);
+	lienes_for_delete = [];
 	for (var i = yRange/sizeSide-1; i > 1; i--) {
 		 let count = 0;
 		for (var j = 0; j < xRange/sizeSide; j++) {
 			if(matrixFigure[i][j]){
 				count++;
-				console.log("IT'S True");
 			}
-			console.log("count=", count);
 		}
 		if(count === xRange/sizeSide){
-			console.log(count, "==", 10);
-			clearing_line_is = i;
-			return true;
+			lienes_for_delete.push(i);
+			console.log("WTF");
 		}
 	}
+
+	if(lienes_for_delete.length)
+		return true;
+
 	return false;
 }
 
 function clearLine() {
-	console.log("clearing_line_is", clearing_line_is);
-    var image = ctx.getImageData(0, 0, canvas.width, (clearing_line_is)*sizeSide);
-    ctx.clearRect(0, 0, canvas.width, clearing_line_is*sizeSide);
-    ctx.putImageData(image, 0, sizeSide);
-	score++;
-	recountMatrix();
+	for (let line of lienes_for_delete.reverse()) {
+		console.log("clearing_line_is", line);
+	    var image = ctx.getImageData(0, 0, canvas.width, (line)*sizeSide);
+	    ctx.clearRect(0, 0, canvas.width, line*sizeSide);
+	    ctx.putImageData(image, 0, sizeSide);
+		score++;
+		recountMatrix(line);
+	}
 }
 
-function recountMatrix() {
-	for (let i = clearing_line_is; i > 1; i--){
-        matrixFigure[i] = matrixFigure[i-1];
-    }
+function recountMatrix(line) {
+	for (let i = line; i > 1; i--){
+		matrixFigure[i] = matrixFigure[i-1];
+	}
+
 }
 
 function startGame() {
-	console.log(matrixFigure);
+	// console.log(matrixFigure);
 
-	if(f.flag_move){ //f.canMoveDown
-		f.draw();
-		f.down();
+	if(f_curent.flag_move){ //f.canMoveDown
+		f_curent.draw();
+		f_curent.down();
+
 	}else {
-		console.log("FLAG MOVE IS FALSE");
+		// console.log("FLAG MOVE IS FALSE");
 		if(checkFullLine()){
 			clearLine();
-			console.log("CHHHHHHEEEK");
 		}
 		// if(checkOnLose()){
 		// 	endGame();
 		// }
 
-		f = new Figure(200, 0, figureArr[Math.floor(Math.random()*7)]); // new Figure(200, 0, "Figure_O");// */new f
-		// f = new Figure(200, 0, "Figure_I");
+		f_curent = f_next;
+		f_next.clearNext();
+
+		f_next = new Figure(sizeSide*4, 0, figureArr[Math.floor(Math.random()*7)]);
+		f_next.drawNext();
 	}
 }
 
 function newGame() {
 	clearInterval(interval);
 	console.log("newGame");
-	f = new Figure(200, 0, figureArr[Math.floor(Math.random()*7)]);
-	// f = new Figure(200, 0, "Figure_I");
+	f_curent = new Figure(sizeSide*4, 0, figureArr[Math.floor(Math.random()*7)]);
+	f_next = new Figure(sizeSide*4, 0, figureArr[Math.floor(Math.random()*7)]);
+	f_next.drawNext();
 	score = 0;
 	interval = setInterval( startGame, 500 );
 
