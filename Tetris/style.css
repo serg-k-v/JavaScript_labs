@@ -20,17 +20,32 @@
 	color: #fff;
 }
 
+#back_btn{
+	margin-top: 2%;
+	margin-left: 4%;
+	background-color: rgba(235,242,242,.65); /* Green */
+    color: #17272a;
+	padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+	border-radius: 15px;
+	border-color: #677381;
+    font-size: 35px;
+}
+
 .newUser {
 	font-size: 40px;
 	font-family: "Times New Roman", serif;
-	color:  #17272a;
+	color:  #deecee;
 	float: left;
 	position: absolute;
-	height: 400px;
-	weight: 800px;
-	top: 30%;
+	/* height: 400px;
+	weight: 800px; */
+	margin-top: 10%;
 	left:20%;
-	background-color: rgba(120,222,213,.45);
+	/* background-color: rgba(120,222,213,.45); */
+	text-shadow: -1px -1px white, 1px 1px gray, 2px 2px #7a7a7a, 3px 3px #757575, 4px 4px #707070, 5px 5px #6b6b6b, 6px 6px #666666, 7px 7px #616161, 8px 8px #5c5c5c, 9px 9px #575757, 10px 10px #525252, 11px 11px #4d4d4d, 18px 18px 30px rgba(0, 0, 0, .4), 18px 18px 10px rgba(0, 0, 0, .4);
 	border-radius: 4%;
     transform: translate(-50%, -50%);
 }
@@ -44,7 +59,7 @@
 }
 
 .table{
-	
+
 }
 
 #mainField {
@@ -93,10 +108,27 @@ input[type = "text"]{
 }
 
 input[type=text] {
-    border: 2px solid  #62bdc3;
+    border: 2px solid  #314546;
     border-radius: 3px;
 	padding: 15px 32px;
 	margin-left: 6%;
 	background-color: #e3eaee;
 	/* box-sizing: border-box; */
+}
+
+table {
+	/* top:20%; */
+    border-collapse: collapse;
+}
+
+table, th, td {
+    text-align: center;
+    color: #fff;
+    font-size: 120%;
+    padding: 5px;
+    border: 1px solid white;
+}
+
+th, td {
+    width: 300px;
 }

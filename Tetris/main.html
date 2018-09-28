@@ -23,16 +23,41 @@
 					<div class="row" >
 						<div class="col-xs-12" style="margin-left: 3%;">
 							<span class="score">
+								<p>
+									<ins>User</ins>:<div id='username'></div>
+								</p>
+							</span>
+
+							<span class="score">
 								<p><ins>Score</ins></p>
 							</span>
 							<canvas id="fieldScore" width="200", height="50"></canvas>
 						</div>
 					</div>
-				<div>
+					<div class="row" >
+						<div class="col-xs-12" style="margin-left: 3%;">
+							<span class="score">
+								<div id='level'>
+								</div>
+							</span>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-xs-12">
+							<button type="button" name="button"
+							id='back_btn' onclick="back()">
+								Back
+							</button>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 
 		<script>
+			document.getElementById('back_btn').disabled = true;
+			document.getElementById('username').innerHTML = localStorage['current_user'];
+			document.getElementById('level').innerHTML =  'Level: ' + level;
 			var canvas = document.getElementById('mainField');
 			var ctx = canvas.getContext('2d');
 			var canvas2 = document.getElementById('nextFigureField');

@@ -6,46 +6,54 @@
 		<title>Tetris</title>
 		<style></style>
 		<link rel="stylesheet" type="text/css" href="style.css">
+		<script type="text/javascript" src="login.js"></script>
 	</head>
 
 	<body>
-		<form action="main.html" method="get" id = "act"> </form>
-			<div class="container">
-				<div class="row" style="margin-top: 2%" >
-					<div class="col-xs-12 col-md-6 newUser" >
-						<h1>Введите имя:</h1>
-						<input type="text" placeholder="Имя пользователя"  id="username"><br>
-						<!-- <input type="button" class="button" value="Ввод" onchange=`changed()` id="butt"> -->
-						<input type="submit" class="button" value="Ввод">
+		<div class="container">
+			<div class="row">
+				<div class="col-xs-12 col-md-6 newUser" >
+					<div class="row">
+						<div class="col-xs-12">
+							<h1>User name</h1>
+						</div>
 					</div>
-					<div class="col-xs-12 col-md-6  block2">
-							<span style="font-size:80px">Records</span>
-							<script type="text/javascript">
-								
-							</script>
+					<div class="row">
+						<div class="col-xs-12">
+							<input type="text" placeholder="User name"  id="username"><br>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-xs-12">
+							<button type="button" class="button" onclick='saveRedirect()' id="butt"> Apply </button>
+						</div>
+					</div>
+				</div>
+				<div class="col-xs-12 col-md-6  block2">
+					<div class="row" style="margin-top:45%;">
+						<div class="col-xs-12">
+							<span style="font-size:80px; font-family: Times New Roman; text-shadow: -1px -1px white, 1px 1px gray, 2px 2px #7a7a7a, 3px 3px #757575, 4px 4px #707070, 5px 5px #6b6b6b, 6px 6px #666666, 7px 7px #616161, 8px 8px #5c5c5c, 9px 9px #575757, 10px 10px #525252, 11px 11px #4d4d4d, 18px 18px 30px rgba(0, 0, 0, .4), 18px 18px 10px rgba(0, 0, 0, .4); color: #cbe5ed;">Records</span>
+						</div>
+					</div>
+					<div class="row" style="margin-top: 10%">
+						<div class="col-xs-12">
+							<table id="table">
+								<thead>
+									<tr>
+										<td>Username</td>
+										<td>Score</td>
+									</tr>
+								</thead>
+								<tbody id="tableBody"></tbody>
+							</table>
+						</div>
 					</div>
 				</div>
 			</div>
-		 </form>
+		</div>
 	</body>
-
 </html>
 
 <script type="text/javascript">
-
-	var user_n = document.getElementById('username');
-	if(localStorage['current_user']){
-		source.value = localStorage['current_user'];
-	}
-
-	function saveRedirect() {
-		localStorage['current_user'] = document.getElementById("username").value;
-		localStorage['current_user'] = 0;
-		window.location = 'main.html';
-
-	}
-
-	function read() {
-		source.value = localStorage[Math.floor(localStorage.length)/2];
-	}
+	check();
 </script>

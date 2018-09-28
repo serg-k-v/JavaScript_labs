@@ -4,7 +4,7 @@ var xRange = 500;
 var yRange = 800;
 var sizeSide = 50;
 var count_level;
-var level;
+var level = 1;
 var lienes_for_delete = [];
 var speed = 700;
 
@@ -99,13 +99,8 @@ class Figure {
 	}
 	canRotate(){
 		let cnt = 0;
-
-		// let x_min = Math.min.apply(null, this.figure.map(item => item.x));
-		// let x_max = Math.max.apply(null, this.figure.map(item => item.x));
-
 		var y_max = 0;
 		var y_min = sizeSide*15;
-
 
 		for(let i of this.figure){
 			let new_coords = i.possibleRotate(this.center);
@@ -117,13 +112,9 @@ class Figure {
 			if( matrixFigure[new_coords.new_y/sizeSide][new_coords.new_x/sizeSide] != undefined && !matrixFigure[new_coords.new_y/sizeSide][new_coords.new_x/sizeSide] /*&& new_coords.new_y < yRange - sizeSide */){
 				cnt++;
 			}
-			// console.log("new coordinates x = ", new_coords.new_x, "y = ", new_coords.new_y);
-			// console.log("x = ", i.x, "y = ", i.y);
-			// console.log(matrixFigure[new_coords.new_y/sizeSide][new_coords.new_x/sizeSide]);
 		}
 
 		if(y_max > yRange){
-			// console.log("RANNGEE");
 			return false;
 		}
 
@@ -142,7 +133,7 @@ class Figure {
 			ctx.clearRect(i.x, i.y, sizeSide, sizeSide);
 		}
 	}
-	draw() {
+	draw(){
 		for (let i of this.figure) {
 				draw(i.x, i.y);
 		}
@@ -160,7 +151,7 @@ class Figure {
 	}
 
 	down(){
-		console.log(matrixFigure);
+		// console.log(matrixFigure);
 		this.clear();// let y_max = Math.max.apply(null, this.figure.map(item => item.y));
 		if(this.canMoveDown()){  /*y_max < yRange - sizeSide ||*/
 			for(let i of this.figure){
@@ -170,7 +161,7 @@ class Figure {
 		}else {
 			for(let i of this.figure){
 				matrixFigure[i.y/sizeSide][i.x/sizeSide] = 1;
-				console.log("y = ", i.y, "x = ", i.x);
+				// console.log("y = ", i.y, "x = ", i.x);
 			}
 			this.flag_move = false;
 
@@ -213,9 +204,7 @@ class Figure {
 		}
 		if(cnt === this.figure.length){
 			return true;
-		} /*else if(y_max === 0 || y_max === 1){
-			return true;
-		} */else {
+		}else {
 			return false;
 		}
 	}
@@ -291,7 +280,7 @@ matrixFigure = matrixFill(yRange/sizeSide-1,10); // 15 = yRange/sizeSide-1; 10 =
 
 function checkOnLose() {
 	for(let sq of f_next.figure){
-        if (matrixFigure[sq.y/sizeSide + 1][sq.x/sizeSide+1]){
+        if (matrixFigure[sq.y/sizeSide+1][sq.x/sizeSide]){
 			// console.log("y = ", sq.y/sizeSide + 1, "x = ", );
             return false;
 		}
@@ -321,7 +310,6 @@ function checkFullLine() {
 
 function clearLine() {
 	for (let line of lienes_for_delete.reverse()) {
-		console.log("clearing_line_is", line);
 	    var image = ctx.getImageData(0, 0, canvas.width, (line)*sizeSide);
 	    ctx.clearRect(0, 0, canvas.width, line*sizeSide);
 	    ctx.putImageData(image, 0, sizeSide);
@@ -330,13 +318,7 @@ function clearLine() {
 	}
 }
 
-function recountScore() {
-	score = Math.floor(score + 1 + (level*2)/3);
-	if(score > count_level*10){
-		level++;
-		speed = Math.floor(speed*0.45);
-		console.log("speed= ",speed);
-	}
+function drawScore() {
 	ctxScore.clearRect(0, 0, sizeSide*4, sizeSide)
 	ctxScore.font = "40px Verdana"
 	var gradient=ctxScore.createLinearGradient(0,0, fieldScore.width,0);
@@ -345,6 +327,36 @@ function recountScore() {
 	gradient.addColorStop("0.1","red");
 	ctxScore.fillStyle=gradient;
 	ctxScore.fillText(score, 10, 40);
+}
+
+function recountScore() {
+	score = Math.floor(score + 1 + (level*2)/3);
+	if(score > count_level*3){
+		level++;
+		let str= 'Level: ' + level.toString()
+		document.getElementById('level').innerHTML = str;
+		speed = Math.floor(speed*0.90);
+		clearInterval();
+		setInterval(startGame, speed);
+		// if(speed > 350){
+
+		// }else {
+		// 	fullMatrix();
+		// 	endGame();
+		// }
+	}
+	drawScore();
+}
+
+function fullAllMatrix(){
+	var arr = new Array();
+ 	for(var i=0; i<rows+2; i++){
+		arr[i] = new Array();
+		for(var j=0; j<columns; j++){
+			arr[i][j] = 1;
+		}
+ 	}
+ 	return arr;
 }
 
 function recountMatrix(line) {
@@ -357,14 +369,15 @@ function startGame() {
 	if(f_curent.flag_move){
 		f_curent.draw();
 		f_curent.down();
-
 	}else {
 		if(checkFullLine()){
 			clearLine();
 		}
 		if(!checkOnLose()){
-			console.log("IT'S TRUE");
+			f_curent.flag_move=false;
+			f_next.flag_move=false;
 			endGame();
+			return;
 		}
 
 		f_curent = f_next;
@@ -377,19 +390,19 @@ function startGame() {
 
 function newGame() {
 	clearInterval(interval);
-	console.log("newGame");
 	f_curent = new Figure(sizeSide*4, 0, figureArr[Math.floor(Math.random()*7)]);
 	f_next = new Figure(sizeSide*4, 0, figureArr[Math.floor(Math.random()*7)]);
+	f_curent.draw();
 	f_next.drawNext();
 	score = 0;
 	level = 1;
 	count_level = level;
+	drawScore();
 	interval = setInterval( startGame, speed);
-
 }
 
 function endGame() {
-	clearInterval (interval);
+	clearInterval(interval);
 	ctx.clearRect(0,0, mainField.width, mainField.height);
 	ctx2.clearRect(0,0, nextFigureField.width, nextFigureField.height);
 	let img = new Image();
@@ -398,5 +411,33 @@ function endGame() {
 		ctx.drawImage(img, 50, 200);
 	}
 	img.src = url;
+	document.getElementById('back_btn').disabled = false;
+	updateScoreTable();
+}
 
+function updateScoreTable() {
+    if (localStorage['current_score'] < score)
+        localStorage['current_score'] = score;
+    let records = localStorage['scores'];
+    if (records !== undefined && records.length){
+        records = JSON.parse(records);
+        if (records[localStorage['current_user']]){
+            if (records[localStorage['current_user']] < score )
+                records[localStorage['current_user']] = score;
+        }
+        else{
+            records[localStorage['current_user']] = score;
+        }
+    }
+    else
+    {
+        records = {};
+        records[localStorage['current_user']] = score;
+    }
+    // console.log(records);
+    localStorage['scores'] = JSON.stringify(records);
+}
+
+function back(){
+	window.location = 'Welcome_page.html'
 }
