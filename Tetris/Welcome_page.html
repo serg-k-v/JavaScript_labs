@@ -1,25 +1,34 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
+
 	<head>
 		<meta charset="utf-8">
 		<title>Tetris</title>
+		<style></style>
 		<link rel="stylesheet" type="text/css" href="style.css">
 	</head>
-	<body style="background-color:#a2e4ce">
-		<form action="main.html" method="get" id = "act">
 
-			<div class="block1">
-				<label class="s-label_search">
-					<h1>Введите имя:</h1>
-				</label>
-
-			    <input type="text" placeholder="Имя пользователя"  id="username"><br>
-				<input type="button" class="button" value="Ввод" onchange=`changed()` id="butt">
+	<body>
+		<form action="main.html" method="get" id = "act"> </form>
+			<div class="container">
+				<div class="row" style="margin-top: 2%" >
+					<div class="col-xs-12 col-md-6 newUser" >
+						<h1>Введите имя:</h1>
+						<input type="text" placeholder="Имя пользователя"  id="username"><br>
+						<!-- <input type="button" class="button" value="Ввод" onchange=`changed()` id="butt"> -->
+						<input type="submit" class="button" value="Ввод">
+					</div>
+					<div class="col-xs-12 col-md-6  block2">
+							<span style="font-size:80px">Records</span>
+							<script type="text/javascript">
+								
+							</script>
+					</div>
+				</div>
 			</div>
-
-		</form>
-
+		 </form>
 	</body>
+
 </html>
 
 <script type="text/javascript">

@@ -3,7 +3,10 @@ var blackRect = "#102d0e";
 var xRange = 500;
 var yRange = 800;
 var sizeSide = 50;
+var count_level;
+var level;
 var lienes_for_delete = [];
+var speed = 700;
 
 let interval;
 var matrixFigure;
@@ -16,7 +19,6 @@ function draw(x, y){
 	ctx.strokeStyle = blackRect;
 	ctx.strokeRect(x+2, y+2, sizeSide-4, sizeSide-4);
 }
-
 function drawNext(x, y){
 	ctx2.fillStyle = lightGrFill;
 	ctx2.lineWidth = 2; // width of stroke
@@ -45,7 +47,6 @@ class Square {
 		// console.log("new_x= ", new_x, "new_y", new_y);
 		return {new_x: new_x, new_y: new_y};
 	}
-
 }
 
 class Figure {
@@ -90,8 +91,6 @@ class Figure {
 			if(this.canRotate()){
 				this.clear();
 				for (let sq of this.figure) {
-					// console.log("x = ", sq.x, "y = ", sq.y);
-					// console.log("fcenter x = ", this.center.x, "center y = ", this.center.y);
 					sq.rotate(this.center);
 				}
 			}
@@ -100,14 +99,20 @@ class Figure {
 	}
 	canRotate(){
 		let cnt = 0;
-		let x_min = Math.min.apply(null, this.figure.map(item => item.x));
-		let x_max = Math.max.apply(null, this.figure.map(item => item.x));
+
+		// let x_min = Math.min.apply(null, this.figure.map(item => item.x));
+		// let x_max = Math.max.apply(null, this.figure.map(item => item.x));
+
 		var y_max = 0;
+		var y_min = sizeSide*15;
+
 
 		for(let i of this.figure){
 			let new_coords = i.possibleRotate(this.center);
 			if(y_max < new_coords.new_y)
 				y_max = new_coords.new_y;
+			if(y_min > new_coords.new_y)
+				y_min = new_coords.new_y;
 
 			if( matrixFigure[new_coords.new_y/sizeSide][new_coords.new_x/sizeSide] != undefined && !matrixFigure[new_coords.new_y/sizeSide][new_coords.new_x/sizeSide] /*&& new_coords.new_y < yRange - sizeSide */){
 				cnt++;
@@ -122,10 +127,10 @@ class Figure {
 			return false;
 		}
 
-		if(cnt === this.figure.length){
-			// console.log("TRUEEEEEEEEE");
-			// console.log(matrixFigure);
+		if(y_min === 0)
+		return false;
 
+		if(cnt === this.figure.length){
 			return true;
 		}else {
 			return false;
@@ -154,19 +159,20 @@ class Figure {
 		}
 	}
 
-
 	down(){
+		console.log(matrixFigure);
 		this.clear();// let y_max = Math.max.apply(null, this.figure.map(item => item.y));
 		if(this.canMoveDown()){  /*y_max < yRange - sizeSide ||*/
-			for(let i of this.figure)
+			for(let i of this.figure){
 				i.y = i.y + sizeSide;
-
+			}
 			this.center.y += sizeSide;
 		}else {
 			for(let i of this.figure){
-				matrixFigure[i.y/50][i.x/50] = true;
-				this.flag_move = false;
+				matrixFigure[i.y/sizeSide][i.x/sizeSide] = 1;
+				console.log("y = ", i.y, "x = ", i.x);
 			}
+			this.flag_move = false;
 
 		}
 		this.draw();
@@ -207,7 +213,9 @@ class Figure {
 		}
 		if(cnt === this.figure.length){
 			return true;
-		}else {
+		} /*else if(y_max === 0 || y_max === 1){
+			return true;
+		} */else {
 			return false;
 		}
 	}
@@ -270,9 +278,9 @@ function matrixFill(rows,columns){
 		arr[i] = new Array();
 		for(var j=0; j<columns; j++){
 			if(i===rows+1 || i===0){
-				arr[i][j] = true;
+				arr[i][j] = 1;
 			}else {
-				arr[i][j] = false;
+				arr[i][j] = 0;
 			}
 		}
  	}
@@ -282,9 +290,12 @@ function matrixFill(rows,columns){
 matrixFigure = matrixFill(yRange/sizeSide-1,10); // 15 = yRange/sizeSide-1; 10 = xRange/sizeSide
 
 function checkOnLose() {
-	for(let sq of f_next.figure)
-        if (matrixFigure[sq.y/sizeSide + 1][sq.x/sizeSide+1])
+	for(let sq of f_next.figure){
+        if (matrixFigure[sq.y/sizeSide + 1][sq.x/sizeSide+1]){
+			// console.log("y = ", sq.y/sizeSide + 1, "x = ", );
             return false;
+		}
+	}
     return true;
 }
 
@@ -320,7 +331,12 @@ function clearLine() {
 }
 
 function recountScore() {
-	score = Math.floor(score +1  + (score*2)/3);
+	score = Math.floor(score + 1 + (level*2)/3);
+	if(score > count_level*10){
+		level++;
+		speed = Math.floor(speed*0.45);
+		console.log("speed= ",speed);
+	}
 	ctxScore.clearRect(0, 0, sizeSide*4, sizeSide)
 	ctxScore.font = "40px Verdana"
 	var gradient=ctxScore.createLinearGradient(0,0, fieldScore.width,0);
@@ -333,12 +349,11 @@ function recountScore() {
 
 function recountMatrix(line) {
 	for (let i = line; i > 1; i--){
-		matrixFigure[i] = matrixFigure[i-1];
+		matrixFigure[i] = matrixFigure[i-1].slice();
 	}
 }
 
 function startGame() {
-
 	if(f_curent.flag_move){
 		f_curent.draw();
 		f_curent.down();
@@ -348,6 +363,7 @@ function startGame() {
 			clearLine();
 		}
 		if(!checkOnLose()){
+			console.log("IT'S TRUE");
 			endGame();
 		}
 
@@ -366,7 +382,9 @@ function newGame() {
 	f_next = new Figure(sizeSide*4, 0, figureArr[Math.floor(Math.random()*7)]);
 	f_next.drawNext();
 	score = 0;
-	interval = setInterval( startGame, 500 );
+	level = 1;
+	count_level = level;
+	interval = setInterval( startGame, speed);
 
 }
 
