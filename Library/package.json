@@ -1,0 +1,25 @@
+{
+  "name": "lib",
+  "version": "1.0.0",
+  "description": "small web-library",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/serg-k-v/JavaScript_labs.git"
+  },
+  "keywords": [
+    "weblib"
+  ],
+  "author": "akuma",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/serg-k-v/JavaScript_labs/issues"
+  },
+  "homepage": "https://github.com/serg-k-v/JavaScript_labs#readme",
+  "dependencies": {
+    "express": "^4.16.3"
+  }
+}
